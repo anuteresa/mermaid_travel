@@ -1,4 +1,6 @@
 var mermaidImage,water,turtleImage,ground,crabImage,crab;
+var score=0;
+var gamestate="play"
 
 function preload() {
   mermaidImage=loadAnimation("alienGreen.png","jump.png");
@@ -31,7 +33,7 @@ function setup(){
 
 function draw(){
 background("white")
-  
+  if (gamestate==="play")
     background1.velocityX = -8;
   if ( background1.x < 0) {
      background1.x =  background1.width / 2;
@@ -81,9 +83,24 @@ background("white")
  crab.collide(ground);
   }
   
+  if (crabGroup.isTouching(meramid)) {
+    crabGroup.destroyEach();
+    meramid.scale=.1;
+    score=0;
+  
+   
+  
+   
+  }
+  
+
   
   meramid.collide(ground);
   //crab.collide(ground);
   drawSprites();
+  stroke("white");
+  textSize(22);
+  fill("white");
+  text("Score : " + score, 450, 60)
 }
-  
+
