@@ -1,14 +1,17 @@
-var mermaidImage,water,turtleImage,ground,crabImage,crab;
+var mermaidImage,water,meramid_fall,turtleImage,ground,crabImage,crab;
 var score=0;
+
 var gamestate="play"
 
 function preload() {
   mermaidImage=loadAnimation("alienGreen.png","jump.png");
+   meramid_fall=loadAnimation("alienfall.png")
   water=loadImage("underwater.png");
   bubbleImage=loadImage("bubble.png");
   shipImage=loadImage("download.png")
   turtleImage=loadImage("turtle.png");
   crabImage=loadImage("crab.png")
+ 
 }
 
 function setup(){
@@ -21,6 +24,7 @@ function setup(){
   
   meramid=createSprite(120,300,20,20)
   meramid.addAnimation("mermaid",mermaidImage);
+   meramid.addAnimation("fall",meramid_fall);
   meramid.scale=1; 
   
   ground = createSprite(100, 420, 600, 5);
@@ -33,19 +37,72 @@ function setup(){
 
 function draw(){
 background("white")
-  if (gamestate==="play")
+     
+   
+  if (gamestate==="play"){
     background1.velocityX = -8;
   if ( background1.x < 0) {
      background1.x =  background1.width / 2;
   }
   
-  
+
+    score = score + Math.round(frameCount/60);
+    
   if (keyDown("space") && meramid.y >= 250) {
     meramid.velocityY = -17;
   }
-  console.log(meramid.y);
+ 
   meramid.velocityY = meramid.velocityY + 0.9;
+    
+    ship();
+    bubble();
+    crab();
+ 
+    if (crabGroup.isTouching(meramid)) {
+      gamestate="end";
+      
+      
+    }
+  }
   
+  if(gamestate=="end"){
+     background1.velocityX = 0;
+    meramid.velocityX=0;
+     meramid.changeAnimation("fall",meramid_fall);
+  
+    crabGroup.setLifetimeEach(-1);
+      bubbleGroup.setLifetimeEach(-1);
+      shipGroup.setLifetimeEach(-1);
+    
+     
+      
+      crabGroup.setVelocityXEach(0);
+      bubbleGroup.setVelocityXEach(0);
+      shipGroup.setVelocityXEach(0);
+    
+      
+      
+      
+     
+      
+  
+    score=0;
+    }
+
+  
+  meramid.collide(ground);
+  //crab.collide(ground);
+  drawSprites();
+  stroke("white");
+  textSize(22);
+  fill("white");
+  text("Score : " + score, 450, 60)
+  
+  }
+
+
+
+ function bubble(){
   if (frameCount % 80 === 0) {
     var bubble = createSprite(500, random(110, 190), 20, 20);
     bubble.addImage(bubbleImage);
@@ -63,7 +120,8 @@ background("white")
     turtle.lifetime = 100;
     bubbleGroup.add(turtle);
   }
-  
+ }
+function ship(){
   
     if (frameCount % 100 === 0) {
     var ship = createSprite(500, random(50, 100), 20, 20);
@@ -73,6 +131,11 @@ background("white")
     ship.lifetime = 64;
     shipGroup.add(ship);
   }
+}
+
+function crab(){
+  
+
    if (frameCount % 100 === 0) {
     var crab = createSprite(500, random(380, 420), 20, 20);
     crab.addImage(crabImage);
@@ -82,25 +145,6 @@ background("white")
     crabGroup.add(crab);
  crab.collide(ground);
   }
-  
-  if (crabGroup.isTouching(meramid)) {
-    crabGroup.destroyEach();
-    meramid.scale=.1;
-    score=0;
-  
-   
-  
-   
-  }
-  
-
-  
-  meramid.collide(ground);
-  //crab.collide(ground);
-  drawSprites();
-  stroke("white");
-  textSize(22);
-  fill("white");
-  text("Score : " + score, 450, 60)
 }
-
+  
+  
