@@ -46,7 +46,7 @@ background("white")
   }
   
 
-    score = score + Math.round(frameCount/60);
+    score = score + Math.round(getframeCount()/60);
     
   if (keyDown("space") && meramid.y >= 250) {
     meramid.velocityY = -17;
